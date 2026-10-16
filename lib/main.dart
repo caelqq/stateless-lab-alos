@@ -51,13 +51,20 @@ const List<Student> students = [
   ),
 ];
 
-// Stateless because it only holds app-wide settings that never change while running.
+// Stateless because it only holds app-wide settings (theme, home) that never change while running.
 class DirectoryApp extends StatelessWidget {
   const DirectoryApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: DirectoryScreen());
+    return MaterialApp(
+      title: 'Campus Directory',
+      theme: ThemeData(
+        colorSchemeSeed: Colors.indigo, // Customization 1: theme seed color
+        useMaterial3: true,
+      ),
+      home: const DirectoryScreen(),
+    );
   }
 }
 
@@ -67,9 +74,19 @@ class DirectoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Campus Directory')),
+      appBar: AppBar(
+        title: const Text(
+          'Campus Directory',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: colors.primary, // Customization 2: colored AppBar
+        foregroundColor: colors.onPrimary,
+      ),
       body: ListView(
+        padding: const EdgeInsets.all(16), // Customization 3: list padding
         children: [
           const SectionHeader(title: 'Students'),
           for (final student in students) StudentCard(student: student),
@@ -134,26 +151,51 @@ class StudentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
     return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(
+          16,
+        ), // Customization 4: rounded Card corners
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(16),
         child: Row(
           children: [
-            CircleAvatar(child: Text(student.name[0])),
-            const SizedBox(width: 12),
+            CircleAvatar(
+              radius: 28,
+              backgroundColor: colors.primary, // Customization 5: avatar color
+              foregroundColor: colors.onPrimary,
+              child: Text(
+                student.name[0],
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            const SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     student.name,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight
+                          .bold, // Customization 6: TextStyle for the name
+                    ),
                   ),
                   Text(student.course),
+                  const SizedBox(height: 8),
                   InfoRow(
                     icon: Icons.school,
                     text: 'Year ${student.yearLevel}',
                   ),
+                  const SizedBox(height: 4),
                   InfoRow(icon: Icons.email, text: student.email),
                 ],
               ),
